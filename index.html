@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>พอร์ตโฟลิโอ | นักออกแบบระบบและจัดการข้อมูล</title>
+<meta name="description" content="พอร์ตโฟลิโอนักศึกษามหาวิทยาลัยกรุงเทพ ด้านฐานข้อมูล SQL และการออกแบบ UI/UX">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy-950: #04251d;
+  --navy-800: #0a3d30;
+  --navy-600: #17604a;
+  --orange: #e8b53c;
+  --orange-soft: #f3d27a;
+  --paper: #f3f6fc;
+  --ink: #0b2a21;
+  --muted: #b5d0c4;
+  --glass: rgba(255, 255, 255, .09);
+  --glass-strong: rgba(255, 255, 255, .15);
+  --glass-line: rgba(255, 255, 255, .22);
+  --radius-lg: 28px;
+  --radius-md: 20px;
+  --radius-sm: 12px;
+  --font-head: "Kanit", "Sarabun", sans-serif;
+  --font-body: "Sarabun", "Kanit", sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+body {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #fff;
+  background: var(--navy-950);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; border-radius: 6px; }
+
+/* ---------- พื้นหลังภาพมหาวิทยาลัย (เบลอเบา ๆ) ---------- */
+#bg {
+  position: fixed; inset: 0; z-index: -2;
+  background:
+    linear-gradient(160deg, var(--navy-800) 0%, var(--navy-950) 70%);
+  background-size: cover;
+  background-position: center;
+}
+#bg::before {
+  content: ""; position: absolute; inset: -20px;
+  background-image: var(--hero-bg, none);
+  background-size: cover; background-position: center;
+  filter: blur(5px) saturate(1.05);
+}
+#bg::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(45deg, rgba(255,255,255,.025) 0 2px, transparent 2px 6px),
+    linear-gradient(180deg, rgba(4,37,29,.6) 0%, rgba(4,37,29,.84) 55%, rgba(4,37,29,.95) 100%);
+}
+
+/* ---------- เมนูด้านบน ---------- */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  padding: 14px 0;
+  transition: background .3s, backdrop-filter .3s;
+}
+.nav.scrolled {
+  background: rgba(4,37,29,.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--glass-line);
+}
+.wrap { width: min(1180px, 92%); margin-inline: auto; }
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; }
+.brand { font-family: var(--font-head); font-size: 1.5rem; font-weight: 600; letter-spacing: .01em; }
+.brand b { color: var(--orange); font-weight: 600; }
+.nav ul { display: flex; gap: 6px; list-style: none; }
+.nav ul a {
+  display: block; padding: 6px 16px; border-radius: 999px;
+  font-size: .98rem; color: var(--muted); transition: color .2s, background .2s;
+}
+.nav ul a:hover { color: #fff; background: var(--glass-strong); }
+.menu-btn {
+  display: none; background: var(--glass); border: 1px solid var(--glass-line);
+  color: #fff; width: 44px; height: 44px; border-radius: 12px; cursor: pointer; font-size: 1.3rem;
+}
+
+/* ---------- ปุ่ม ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--font-head); font-weight: 500; font-size: .98rem;
+  padding: 11px 28px; border-radius: 999px; border: 0; cursor: pointer;
+  transition: transform .2s, background .2s, box-shadow .2s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-light { background: #fff; color: var(--ink); }
+.btn-orange { background: var(--orange); color: #1a0d00; }
+.btn-orange:hover { box-shadow: 0 8px 24px rgba(232,181,60,.4); }
+
+/* ---------- หน้าแรก ---------- */
+.hero { min-height: 100vh; padding: 130px 0 56px; display: flex; flex-direction: column; justify-content: space-between; gap: 56px; }
+.hero-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px; align-items: center; }
+.badge {
+  display: inline-block; padding: 5px 18px; border-radius: 999px;
+  background: var(--glass); border: 1px solid var(--glass-line);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  font-size: .95rem; color: var(--orange-soft); margin-bottom: 22px;
+}
+.hero h1 {
+  font-family: var(--font-head); font-weight: 600;
+  font-size: clamp(2rem, 4.6vw, 3.5rem); line-height: 1.3; margin-bottom: 20px;
+}
+.hero h1 em { font-style: normal; color: var(--orange); display: block; }
+.hero p.lead { max-width: 33em; color: var(--muted); font-size: 1.12rem; margin-bottom: 32px; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 14px; }
+
+/* กระจกโชว์ "ข้อมูล → การออกแบบ" */
+.bridge {
+  position: relative; background: var(--glass);
+  border: 1px solid var(--glass-line); border-radius: var(--radius-lg);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  padding: 22px; display: grid; gap: 14px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.35);
+}
+.bridge-label { font-size: .88rem; color: var(--muted); margin-bottom: 6px; }
+.code {
+  background: rgba(2,20,15,.72); border-radius: var(--radius-sm); padding: 14px 16px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: .86rem; line-height: 1.7; color: #d6f5e6; overflow-x: auto; white-space: pre;
+}
+.code .k { color: var(--orange); }
+.code .s { color: #8fe3b0; }
+.mock {
+  background: var(--paper); color: var(--ink); border-radius: var(--radius-sm); padding: 14px 16px;
+  display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center;
+}
+.mock .dot { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--orange), #f3d27a); }
+.mock strong { font-family: var(--font-head); font-weight: 500; display: block; line-height: 1.3; }
+.mock span { font-size: .85rem; color: #4d6b5f; }
+.mock .pill { background: var(--navy-800); color: #fff; font-size: .8rem; padding: 4px 14px; border-radius: 999px; }
+
+/* การ์ดไฮไลต์ 3 ใบ (เลย์เอาต์ตามภาพตัวอย่าง) */
+.highlights { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.hl {
+  display: grid; grid-template-columns: 112px 1fr; align-items: center; gap: 18px;
+  padding: 14px 20px 14px 14px; border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #e4f6ea, #c8ecd8); color: var(--ink);
+  transition: transform .25s;
+}
+.hl:hover { transform: translateY(-4px); }
+.hl small { display: block; font-size: .85rem; color: #4d6b5f; }
+.hl strong { font-family: var(--font-head); font-weight: 500; font-size: 1.15rem; line-height: 1.4; }
+
+/* ช่องใส่รูป (ถ้าไม่มีไฟล์รูป จะแสดงพื้นไล่สีแทน) */
+.slot {
+  position: relative; overflow: hidden; border-radius: 14px;
+  background: linear-gradient(135deg, rgba(232,181,60,.25), rgba(23,96,74,.45));
+  aspect-ratio: 1 / 1;
+}
+.slot::after {
+  content: attr(data-path); position: absolute; inset: 0; display: grid; place-items: center;
+  padding: 8px; text-align: center; font-size: .72rem; line-height: 1.3; color: rgba(11,42,33,.55);
+  word-break: break-all;
+}
+.slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+
+/* ---------- ส่วนทั่วไป ---------- */
+.section { padding: 96px 0; }
+.section-head { margin-bottom: 44px; max-width: 34em; }
+.section-head h2 { font-family: var(--font-head); font-weight: 600; font-size: clamp(1.7rem, 3.4vw, 2.5rem); line-height: 1.35; }
+.section-head p { color: var(--muted); margin-top: 8px; }
+.glass {
+  background: var(--glass); border: 1px solid var(--glass-line); border-radius: var(--radius-md);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+}
+
+/* ทักษะ */
+.skill-main { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; margin-bottom: 26px; }
+.skill-card { padding: 30px; }
+.skill-card h3 { font-family: var(--font-head); font-weight: 500; font-size: 1.4rem; line-height: 1.4; margin-bottom: 8px; }
+.skill-card p { color: var(--muted); margin-bottom: 22px; }
+.meter { height: 8px; border-radius: 99px; background: rgba(255,255,255,.14); overflow: hidden; }
+.meter i { display: block; height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg, var(--orange), #f3d27a); transition: width 1.2s cubic-bezier(.2,.8,.2,1); }
+.meter-text { display: flex; justify-content: space-between; font-size: .88rem; color: var(--muted); margin-top: 8px; }
+.tags { display: flex; flex-wrap: wrap; gap: 12px; }
+.tag {
+  padding: 9px 22px; border-radius: 999px; background: var(--glass);
+  border: 1px solid var(--glass-line); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  font-size: .98rem;
+}
+
+/* ผลงาน */
+.project-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.project { padding: 14px; display: flex; flex-direction: column; transition: transform .25s, border-color .25s; }
+.project:hover { transform: translateY(-6px); border-color: rgba(232,181,60,.7); }
+.project .slot { aspect-ratio: 4 / 3; border-radius: 16px; background-color: #fff; background-image: linear-gradient(135deg, #fff, #e2eee8); }
+.project .slot::after { color: rgba(11,42,33,.4); }
+.project-body { padding: 20px 10px 10px; display: flex; flex-direction: column; flex: 1; }
+.project-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.project-tags span { background: rgba(232,181,60,.18); color: var(--orange-soft); font-size: .84rem; padding: 2px 14px; border-radius: 999px; }
+.project h3 { font-family: var(--font-head); font-weight: 500; font-size: 1.2rem; line-height: 1.45; margin-bottom: 10px; }
+.project p { color: var(--muted); font-size: .98rem; margin-bottom: 20px; flex: 1; }
+.project a.more { font-family: var(--font-head); font-weight: 500; color: var(--orange); }
+.project a.more:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* ติดต่อ */
+.contact-box { padding: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; background: var(--glass-strong); }
+.contact-box h2 { font-family: var(--font-head); font-weight: 600; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.4; margin-bottom: 10px; }
+.contact-box p { color: var(--muted); }
+.contact-list { display: grid; gap: 12px; }
+.contact-list a {
+  display: flex; justify-content: space-between; gap: 16px; padding: 14px 20px; border-radius: var(--radius-sm);
+  background: rgba(4,37,29,.55); border: 1px solid var(--glass-line); transition: border-color .2s, background .2s;
+}
+.contact-list a:hover { border-color: var(--orange); background: rgba(4,37,29,.8); }
+.contact-list span { color: var(--muted); }
+.contact-list b { font-weight: 500; overflow-wrap: anywhere; text-align: right; }
+
+footer { padding: 36px 0 44px; text-align: center; color: var(--muted); font-size: .92rem; border-top: 1px solid var(--glass-line); }
+
+/* โหลดหน้าครั้งเดียว: ไล่ขึ้นเฉพาะส่วนหน้าแรก */
+.hero .hero-grid > * { animation: rise .8s cubic-bezier(.2,.8,.2,1) both; }
+.hero .hero-grid > *:nth-child(2) { animation-delay: .15s; }
+@keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+
+/* ---------- มือถือ / แท็บเล็ต ---------- */
+@media (max-width: 980px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .highlights, .project-grid { grid-template-columns: 1fr; }
+  .hl { grid-template-columns: 96px 1fr; }
+  .skill-main { grid-template-columns: 1fr; }
+  .contact-box { grid-template-columns: 1fr; padding: 32px 24px; }
+}
+@media (max-width: 760px) {
+  .menu-btn { display: block; }
+  .nav ul {
+    position: absolute; top: 100%; left: 4%; right: 4%; flex-direction: column;
+    background: rgba(4,37,29,.94); border: 1px solid var(--glass-line); border-radius: var(--radius-md);
+    padding: 10px; display: none;
+  }
+  .nav.open ul { display: flex; }
+  .nav ul a { padding: 12px 16px; }
+  .section { padding: 72px 0; }
+  .hero { padding-top: 110px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div id="bg" aria-hidden="true"></div>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a href="#home" class="brand" id="brand"></a>
+    <button class="menu-btn" id="menuBtn" aria-label="เปิดเมนู" aria-expanded="false">☰</button>
+    <nav><ul id="navList"></ul></nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="home">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="badge" id="heroBadge"></span>
+        <h1 id="heroTitle"></h1>
+        <p class="lead" id="heroDesc"></p>
+        <div class="cta-row" id="heroCta"></div>
+      </div>
+      <aside class="bridge" aria-hidden="true">
+        <div>
+          <div class="bridge-label">ข้อมูลหลังบ้าน</div>
+          <div class="code"><span class="k">SELECT</span> p.ชื่อสินค้า, <span class="k">SUM</span>(o.จำนวน) <span class="k">AS</span> ยอดขาย
+<span class="k">FROM</span>   สินค้า p
+<span class="k">JOIN</span>   รายการสั่งซื้อ o <span class="k">ON</span> o.รหัส = p.รหัส
+<span class="k">GROUP BY</span> p.ชื่อสินค้า;</div>
+        </div>
+        <div>
+          <div class="bridge-label">หน้าจอที่ผู้ใช้เห็น</div>
+          <div class="mock">
+            <div class="dot"></div>
+            <div><strong>สินค้าขายดีประจำเดือน</strong><span>อัปเดตจากฐานข้อมูลล่าสุด</span></div>
+            <div class="pill">ดูทั้งหมด</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+    <div class="wrap highlights" id="highlights"></div>
+  </section>
+
+  <section class="section" id="skills">
+    <div class="wrap">
+      <div class="section-head"><h2 id="skillsHeading"></h2><p id="skillsSub"></p></div>
+      <div class="skill-main" id="skillMain"></div>
+      <div class="tags" id="skillExtra"></div>
+    </div>
+  </section>
+
+  <section class="section" id="projects">
+    <div class="wrap">
+      <div class="section-head"><h2 id="projectsHeading"></h2><p id="projectsSub"></p></div>
+      <div class="project-grid" id="projectGrid"></div>
+    </div>
+  </section>
+
+  <section class="section" id="contact">
+    <div class="wrap">
+      <div class="glass contact-box">
+        <div><h2 id="contactHeading"></h2><p id="contactDesc"></p></div>
+        <div class="contact-list" id="contactList"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap" id="footerText"></div></footer>
+
+<!-- ข้อมูลสำรอง: ใช้เมื่อเปิดไฟล์โดยตรงจากเครื่อง (file://) ที่ fetch data.json ไม่ได้ -->
+<script id="fallback-data" type="application/json">{"site": {"title": "พอร์ตโฟลิโอ | นักออกแบบระบบและจัดการข้อมูล", "brand": "ชื่อ นามสกุล", "university": "มหาวิทยาลัยกรุงเทพ", "description": "พอร์ตโฟลิโอนักศึกษามหาวิทยาลัยกรุงเทพ ด้านฐานข้อมูล SQL และการออกแบบ UI/UX"}, "nav": [{"label": "หน้าแรก", "href": "#home"}, {"label": "ทักษะ", "href": "#skills"}, {"label": "ผลงาน", "href": "#projects"}, {"label": "ติดต่อ", "href": "#contact"}], "hero": {"background": "images/bu-hero.jpg", "badge": "นักศึกษามหาวิทยาลัยกรุงเทพ", "title": "นักออกแบบระบบและจัดการข้อมูล", "titleHighlight": "(Data-Driven Designer)", "description": "เชื่อมโยงการบริหารจัดการฐานข้อมูลที่แข็งแกร่ง เข้ากับการออกแบบประสบการณ์ผู้ใช้ที่สวยงามและใช้งานง่าย", "primaryCta": {"label": "ดูผลงาน", "href": "#projects"}, "secondaryCta": {"label": "ติดต่อฉัน", "href": "#contact"}}, "highlights": [{"kicker": "ทักษะหลัก", "title": "SQL และฐานข้อมูล", "image": "images/highlight-1.jpg", "href": "#skills"}, {"kicker": "ทักษะหลัก", "title": "ออกแบบ UI/UX", "image": "images/highlight-2.jpg", "href": "#skills"}, {"kicker": "ผลงานล่าสุด", "title": "แดชบอร์ดวิเคราะห์ข้อมูล", "image": "images/highlight-3.jpg", "href": "#projects"}], "skills": {"heading": "ทักษะของฉัน", "subheading": "จากโครงสร้างข้อมูลหลังบ้าน ไปจนถึงหน้าจอที่ผู้ใช้สัมผัสจริง", "main": [{"title": "SQL จัดการฐานข้อมูล", "description": "เขียนคำสั่งสืบค้น เชื่อมตาราง และปรับประสิทธิภาพให้ข้อมูลพร้อมใช้งานเสมอ", "level": 85}, {"title": "การออกแบบ UI/UX", "description": "ออกแบบหน้าจอที่เข้าใจง่าย เริ่มจากความต้องการผู้ใช้จริงจนถึงต้นแบบที่ทดสอบได้", "level": 80}], "extra": ["การออกแบบสถาปัตยกรรมฐานข้อมูล (Database Architecture)", "การแปลงข้อมูลเป็นภาพ (Data Visualization)", "การใช้งาน Figma", "การวิเคราะห์ระบบ (Systems Analysis)"]}, "projects": {"heading": "ผลงานเด่น", "subheading": "โครงการที่แสดงการทำงานร่วมกันของข้อมูลและการออกแบบ", "items": [{"title": "โครงการออกแบบระบบฐานข้อมูลร้านค้าออนไลน์", "image": "images/project-1.jpg", "tags": ["SQL", "Database"], "description": "ออกแบบโครงสร้างฐานข้อมูลสำหรับร้านค้าออนไลน์ ครอบคลุมสินค้า ลูกค้า คำสั่งซื้อ และการชำระเงิน พร้อมแผนภาพ ER และคำสั่ง SQL ที่ใช้งานจริง", "link": "#", "linkLabel": "ดูรายละเอียดโครงการ"}, {"title": "โครงการปรับปรุงหน้าเว็บพอร์ตัลนักศึกษา BU", "image": "images/project-2.jpg", "tags": ["UI/UX", "Figma"], "description": "ปรับปรุงหน้าเว็บพอร์ตัลนักศึกษาให้ค้นหาตารางเรียนและผลการเรียนได้ง่ายขึ้น ด้วยต้นแบบ Figma ที่ผ่านการทดสอบกับเพื่อนนักศึกษา", "link": "#", "linkLabel": "ดูต้นแบบใน Figma"}, {"title": "แดชบอร์ดวิเคราะห์ข้อมูลยอดขาย", "image": "images/project-3.jpg", "tags": ["SQL", "Data Visualization"], "description": "ดึงข้อมูลยอดขายด้วย SQL แล้วสรุปเป็นแดชบอร์ดที่เห็นแนวโน้มรายเดือน สินค้าขายดี และภูมิภาคที่เติบโต", "link": "#", "linkLabel": "ดูแดชบอร์ด"}]}, "contact": {"heading": "สนใจร่วมงานหรือพูดคุย", "description": "ส่งข้อความมาได้เลย ฉันพร้อมคุยเรื่องโครงการ ฝึกงาน หรือโอกาสร่วมงาน", "items": [{"label": "อีเมล", "value": "yourname@example.com", "href": "mailto:yourname@example.com"}, {"label": "GitHub", "value": "github.com/yourname", "href": "https://github.com/yourname"}, {"label": "LinkedIn", "value": "linkedin.com/in/yourname", "href": "https://linkedin.com/in/yourname"}]}, "footer": "© 2569 ชื่อ นามสกุล · นักศึกษามหาวิทยาลัยกรุงเทพ"}</script>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  };
+
+  // ช่องใส่รูป: ถ้าไม่มีไฟล์รูป ระบบจะลบแท็ก img และแสดงพื้นไล่สีพร้อมชื่อไฟล์แทน
+  function slot(src, alt) {
+    return '<div class="slot" data-path="' + esc(src) + '"><img src="' + esc(src) +
+      '" alt="' + esc(alt) + '" loading="lazy" onerror="this.remove()"></div>';
+  }
+
+  function render(d) {
+    document.title = d.site.title;
+    $("bg").style.setProperty("--hero-bg", 'url("' + d.hero.background + '")');
+
+    $("brand").innerHTML = esc(d.site.brand) + "<b>.</b>";
+    $("navList").innerHTML = d.nav.map(function (n) {
+      return '<li><a href="' + esc(n.href) + '">' + esc(n.label) + "</a></li>";
+    }).join("");
+
+    $("heroBadge").textContent = d.hero.badge;
+    $("heroTitle").innerHTML = esc(d.hero.title) + "<em>" + esc(d.hero.titleHighlight) + "</em>";
+    $("heroDesc").textContent = d.hero.description;
+    $("heroCta").innerHTML =
+      '<a class="btn btn-light" href="' + esc(d.hero.secondaryCta.href) + '">' + esc(d.hero.secondaryCta.label) + "</a>" +
+      '<a class="btn btn-orange" href="' + esc(d.hero.primaryCta.href) + '">' + esc(d.hero.primaryCta.label) + "</a>";
+
+    $("highlights").innerHTML = d.highlights.map(function (h) {
+      return '<a class="hl" href="' + esc(h.href) + '">' + slot(h.image, h.title) +
+        "<div><small>" + esc(h.kicker) + "</small><strong>" + esc(h.title) + "</strong></div></a>";
+    }).join("");
+
+    $("skillsHeading").textContent = d.skills.heading;
+    $("skillsSub").textContent = d.skills.subheading;
+    $("skillMain").innerHTML = d.skills.main.map(function (s) {
+      return '<article class="glass skill-card"><h3>' + esc(s.title) + "</h3><p>" + esc(s.description) +
+        '</p><div class="meter" role="img" aria-label="ระดับความชำนาญ ' + s.level + ' เปอร์เซ็นต์"><i data-w="' + s.level + '"></i></div>' +
+        '<div class="meter-text"><span>ระดับความชำนาญ</span><span>' + s.level + "%</span></div></article>";
+    }).join("");
+    $("skillExtra").innerHTML = d.skills.extra.map(function (t) {
+      return '<span class="tag">' + esc(t) + "</span>";
+    }).join("");
+
+    $("projectsHeading").textContent = d.projects.heading;
+    $("projectsSub").textContent = d.projects.subheading;
+    $("projectGrid").innerHTML = d.projects.items.map(function (p) {
+      return '<article class="glass project">' + slot(p.image, p.title) +
+        '<div class="project-body"><div class="project-tags">' +
+        p.tags.map(function (t) { return "<span>" + esc(t) + "</span>"; }).join("") +
+        "</div><h3>" + esc(p.title) + "</h3><p>" + esc(p.description) + "</p>" +
+        '<a class="more" href="' + esc(p.link) + '">' + esc(p.linkLabel) + "</a></div></article>";
+    }).join("");
+
+    $("contactHeading").textContent = d.contact.heading;
+    $("contactDesc").textContent = d.contact.description;
+    $("contactList").innerHTML = d.contact.items.map(function (c) {
+      return '<a href="' + esc(c.href) + '" target="_blank" rel="noopener"><span>' + esc(c.label) +
+        "</span><b>" + esc(c.value) + "</b></a>";
+    }).join("");
+
+    $("footerText").textContent = d.footer;
+
+    // แถบความชำนาญเลื่อนเต็มเมื่อเห็นบนหน้าจอ
+    var bars = document.querySelectorAll(".meter i");
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          if (e.isIntersecting) { e.target.style.width = e.target.dataset.w + "%"; io.unobserve(e.target); }
+        });
+      }, { threshold: .4 });
+      bars.forEach(function (b) { io.observe(b); });
+    } else {
+      bars.forEach(function (b) { b.style.width = b.dataset.w + "%"; });
+    }
+  }
+
+  // โหลด data.json (ใช้ได้บน GitHub Pages / Live Server) ถ้าไม่ได้ให้ใช้ข้อมูลสำรองในไฟล์
+  fetch("data.json")
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .catch(function () { return JSON.parse($("fallback-data").textContent); })
+    .then(render);
+
+  // เมนู
+  var nav = $("nav"), btn = $("menuBtn");
+  window.addEventListener("scroll", function () { nav.classList.toggle("scrolled", window.scrollY > 24); }, { passive: true });
+  btn.addEventListener("click", function () {
+    var open = nav.classList.toggle("open");
+    btn.setAttribute("aria-expanded", open);
+  });
+  $("navList").addEventListener("click", function () { nav.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); });
+})();
+</script>
+</body>
+</html>
